@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agendamento-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: agendamento-backend
+  template:
+    metadata:
+      labels:
+        app: agendamento-backend
+    spec:
+      containers:
+        - name: backend
+          image: Lulu015/suporte-ti-agendamento-backend:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DB_HOST
+              value: mysql
+            - name: DB_USER
+              value: user
+            - name: DB_PASSWORD
+              value: password
+            - name: DB_NAME
+              value: agendamento_db
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: agendamento-service
+spec:
+  selector:
+    app: agendamento-backend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: LoadBalancer
